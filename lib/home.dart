@@ -49,6 +49,26 @@ class _HomeState extends State<Home> {
     );
   }
 
+  void mosSosSignal() {
+    if (isTorchOn == true) {
+      // torch current on
+      // mos signal SOS = ... --- ...
+      blankTorch(200, 3); // 0.2 간격으로 세번 켜졌다 꺼짐 ...
+      blankTorch(800, 3); // 0.8 간격으로 세번 켜졌다 꺼짐 ---
+      blankTorch(200, 3); // 0.2 간격으로 세번 켜졌다 꺼짐 ...
+    }
+    // blankTorch
+  }
+
+  void blankTorch(int milliseconds, int repeat) {
+    for (int i = 0; i < repeat; i++) {
+      _turnOnTorch(context);
+      Future.delayed(Duration(milliseconds: milliseconds));
+      _turnOffTorch(context);
+      Future.delayed(Duration(milliseconds: milliseconds));
+    }
+  }
+
   Future<void> _turnOnTorch(BuildContext context) async {
     try {
       await TorchLight.enableTorch();

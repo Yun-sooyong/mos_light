@@ -10,6 +10,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isTorchOn = false;
+  //Timer _timer;
 
   @override
   Widget build(BuildContext context) {
@@ -26,47 +27,60 @@ class _HomeState extends State<Home> {
         height: double.infinity,
         color: Colors.blueGrey,
         child: Center(
-          child: IconButton(
-            icon: isTorchOn
-                ? const Icon(
-                    Icons.flashlight_on_rounded,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '$isTorchOn',
+                style: TextStyle(
+                    fontSize: 25,
+                    color: isTorchOn ? Colors.white : Colors.black),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  icon: isTorchOn
+                      ? const Icon(
+                          Icons.flashlight_on_rounded,
+                          size: 40,
+                          color: Colors.amber,
+                        )
+                      : const Icon(
+                          Icons.flashlight_off_rounded,
+                          size: 40,
+                        ),
+                  onPressed: () async {
+                    setState(() {
+                      isTorchOn = !isTorchOn;
+                    });
+                    isTorchOn ? _turnOnTorch(context) : _turnOffTorch(context);
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  onPressed: () {
+                    blinkTorch(isTorchOn);
+                  },
+                  icon: const Icon(
+                    Icons.sos,
                     size: 40,
-                    color: Colors.amber,
-                  )
-                : const Icon(
-                    Icons.flashlight_off_rounded,
-                    size: 40,
+                    color: Colors.red,
                   ),
-            onPressed: () async {
-              setState(() {
-                isTorchOn = !isTorchOn;
-              });
-              isTorchOn ? _turnOnTorch(context) : _turnOffTorch(context);
-            },
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  void mosSosSignal() {
-    if (isTorchOn == true) {
-      // torch current on
-      // mos signal SOS = ... --- ...
-      blankTorch(200, 3); // 0.2 간격으로 세번 켜졌다 꺼짐 ...
-      blankTorch(800, 3); // 0.8 간격으로 세번 켜졌다 꺼짐 ---
-      blankTorch(200, 3); // 0.2 간격으로 세번 켜졌다 꺼짐 ...
-    }
-    // blankTorch
-  }
-
-  void blankTorch(int milliseconds, int repeat) {
-    for (int i = 0; i < repeat; i++) {
-      _turnOnTorch(context);
-      Future.delayed(Duration(milliseconds: milliseconds));
-      _turnOffTorch(context);
-      Future.delayed(Duration(milliseconds: milliseconds));
-    }
+  void blinkTorch(bool isTorchOn) {
+    _showMessage('$isTorchOn', context);
+    _turnOnTorch(context);
+    //Timer(Duration(seconds: 10), () {});
   }
 
   Future<void> _turnOnTorch(BuildContext context) async {

@@ -26,23 +26,32 @@ class _HomeState extends State<Home> {
         height: double.infinity,
         color: Colors.blueGrey,
         child: Center(
-          child: IconButton(
-            icon: isTorchOn
-                ? const Icon(
-                    Icons.flashlight_on_rounded,
-                    size: 40,
-                    color: Colors.amber,
-                  )
-                : const Icon(
-                    Icons.flashlight_off_rounded,
-                    size: 40,
-                  ),
-            onPressed: () async {
-              setState(() {
-                isTorchOn = !isTorchOn;
-              });
-              isTorchOn ? _turnOnTorch(context) : _turnOffTorch(context);
-            },
+          child: Column(
+            children: [
+              IconButton(
+                icon: isTorchOn
+                    ? const Icon(
+                        Icons.flashlight_on_rounded,
+                        size: 40,
+                        color: Colors.amber,
+                      )
+                    : const Icon(
+                        Icons.flashlight_off_rounded,
+                        size: 40,
+                      ),
+                onPressed: () async {
+                  setState(() {
+                    isTorchOn = !isTorchOn;
+                  });
+                  isTorchOn ? _turnOnTorch(context) : _turnOffTorch(context);
+                },
+              ),
+              Row(
+                children: [
+                  //TODO Button 3 :: 0.5 / 2.0 / 3.0
+                ],
+              ),
+            ],
           ),
         ),
       ),

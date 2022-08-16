@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:torch_light/torch_light.dart';
+import 'dart:async';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -28,71 +29,47 @@ class _HomeState extends State<Home> {
         color: Colors.blueGrey,
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                icon: isTorchOn
-                    ? const Icon(
-                        Icons.flashlight_on_rounded,
-                        size: 40,
-                        color: Colors.amber,
-                      )
-                    : const Icon(
-                        Icons.flashlight_off_rounded,
-                        size: 40,
-                      ),
-                onPressed: () async {
-                  setState(() {
-                    isTorchOn = !isTorchOn;
-                  });
-                  isTorchOn ? _turnOnTorch(context) : _turnOffTorch(context);
-                },
+              Text(
+                '$isTorchOn',
+                style: TextStyle(
+                    fontSize: 25,
+                    color: isTorchOn ? Colors.white : Colors.black),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '$isTorchOn',
-                    style: TextStyle(
-                        fontSize: 25,
-                        color: isTorchOn ? Colors.white : Colors.black),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  icon: isTorchOn
+                      ? const Icon(
+                          Icons.flashlight_on_rounded,
+                          size: 40,
+                          color: Colors.amber,
+                        )
+                      : const Icon(
+                          Icons.flashlight_off_rounded,
+                          size: 40,
+                        ),
+                  onPressed: () async {
+                    setState(() {
+                      isTorchOn = !isTorchOn;
+                    });
+                    isTorchOn ? _turnOnTorch(context) : _turnOffTorch(context);
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  onPressed: () {
+                    blinkTorch(1);
+                  },
+                  icon: const Icon(
+                    Icons.sos,
+                    size: 40,
+                    color: Colors.red,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                      icon: isTorchOn
-                          ? const Icon(
-                              Icons.flashlight_on_rounded,
-                              size: 40,
-                              color: Colors.amber,
-                            )
-                          : const Icon(
-                              Icons.flashlight_off_rounded,
-                              size: 40,
-                            ),
-                      onPressed: () async {
-                        setState(() {
-                          isTorchOn = !isTorchOn;
-                        });
-                        isTorchOn
-                            ? _turnOnTorch(context)
-                            : _turnOffTorch(context);
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                      onPressed: () {
-                        blinkTorch(isTorchOn);
-                      },
-                      icon: const Icon(
-                        Icons.sos,
-                        size: 40,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -101,17 +78,27 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void blinkTorch(bool isTorchOn) {
-    _showMessage('$isTorchOn', context);
-    _turnOnTorch(context);
-    //Timer(Duration(seconds: 10), () {});
+  void blinkTorch(int time) {
+    //_showMessage('$isTorchOn', context);
+    @override
+    void initState() {
+      super.initState();
+      _turnOnTorch(context);
+    }
+
+    Timer.periodic(Duration(seconds: time), (timer) {
+      _turnOffTorch(context);
+      Timer(Duration(seconds: 1), () {
+        _turnOnTorch(context);
+      });
+    });
   }
 
   Future<void> _turnOnTorch(BuildContext context) async {
     try {
       await TorchLight.enableTorch();
     } on Exception catch (_) {
-      _showMessage('Could not turn on torch', context);
+      //_showMessage('Could not turn on torch', context);
     }
   }
 
@@ -119,7 +106,7 @@ class _HomeState extends State<Home> {
     try {
       await TorchLight.disableTorch();
     } on Exception catch (_) {
-      _showMessage('Could not disable torch', context);
+      //_showMessage('Could not disable torch', context);
     }
   }
 

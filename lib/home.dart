@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mos_light/custom_toggle.dart';
 import 'package:torch_light/torch_light.dart';
 import 'dart:async';
 
@@ -10,6 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<bool> isSelected = [false];
   bool isTorchOn = false;
   //Timer _timer;
 
@@ -24,13 +26,14 @@ class _HomeState extends State<Home> {
         elevation: 0,
       ),
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
+        //width: double.infinity,
+        //height: double.infinity,
         color: Colors.blueGrey,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              ToggleButton(),
               Text(
                 '$isTorchOn',
                 style: TextStyle(
@@ -58,19 +61,6 @@ class _HomeState extends State<Home> {
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  onPressed: () {
-                    blinkTorch(1);
-                  },
-                  icon: const Icon(
-                    Icons.sos,
-                    size: 40,
-                    color: Colors.red,
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -88,7 +78,7 @@ class _HomeState extends State<Home> {
 
     Timer.periodic(Duration(seconds: time), (timer) {
       _turnOffTorch(context);
-      Timer(Duration(seconds: 1), () {
+      Timer(const Duration(seconds: 1), () {
         _turnOnTorch(context);
       });
     });
@@ -97,6 +87,7 @@ class _HomeState extends State<Home> {
   Future<void> _turnOnTorch(BuildContext context) async {
     try {
       await TorchLight.enableTorch();
+      print('on');
     } on Exception catch (_) {
       //_showMessage('Could not turn on torch', context);
     }
@@ -105,6 +96,7 @@ class _HomeState extends State<Home> {
   Future<void> _turnOffTorch(BuildContext context) async {
     try {
       await TorchLight.disableTorch();
+      print('off');
     } on Exception catch (_) {
       //_showMessage('Could not disable torch', context);
     }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'dart:async';
 
@@ -170,6 +172,9 @@ class _HomeState extends State<Home> {
                     offColor = unSelectedColor;
                     blinkColor = selectedColor;
                   });
+                  Timer.periodic(const Duration(seconds: 1), (timer) {
+                    _blinkTorch();
+                  });
                 },
                 // blink
                 child: Align(
@@ -195,19 +200,10 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void blinkTorch(int time) {
-    @override
-    void initState() {
-      super.initState();
-      _turnOnTorch(context);
-    }
-
-    Timer.periodic(Duration(seconds: time), (timer) {
-      _turnOffTorch(context);
-      Timer(const Duration(seconds: 1), () {
-        _turnOnTorch(context);
-      });
-    });
+  void _blinkTorch() async {
+    _turnOnTorch(context);
+    sleep(const Duration(milliseconds: 500));
+    _turnOffTorch(context);
   }
 
   Future<void> _turnOnTorch(BuildContext context) async {

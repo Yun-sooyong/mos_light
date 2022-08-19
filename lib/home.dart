@@ -28,6 +28,8 @@ class _HomeState extends State<Home> {
   late Color offColor;
   late Color blinkColor;
 
+  bool isRun = false;
+
   @override
   void initState() {
     super.initState();
@@ -118,6 +120,7 @@ class _HomeState extends State<Home> {
                     onColor = selectedColor;
                     offColor = unSelectedColor;
                     blinkColor = unSelectedColor;
+                    isRun = false;
                   });
                   _turnOnTorch(context);
                 },
@@ -145,6 +148,7 @@ class _HomeState extends State<Home> {
                     onColor = unSelectedColor;
                     offColor = selectedColor;
                     blinkColor = unSelectedColor;
+                    isRun = false;
                   });
                   _turnOffTorch(context);
                 },
@@ -171,10 +175,14 @@ class _HomeState extends State<Home> {
                     onColor = unSelectedColor;
                     offColor = unSelectedColor;
                     blinkColor = selectedColor;
+                    isRun = !isRun;
                   });
-                  Timer.periodic(const Duration(seconds: 1), (timer) {
-                    _blinkTorch();
-                  });
+                  if (isRun) {
+                    Timer.periodic(const Duration(milliseconds: 800), (timer) {
+                      _blinkTorch();
+                      if (isRun == false) timer.cancel();
+                    });
+                  }
                 },
                 // blink
                 child: Align(
